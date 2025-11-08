@@ -1,7 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
   const {
@@ -11,11 +12,19 @@ const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const formSubmit = (data) => {
+  const navigate = useNavigate()
+
+  const formSubmit = async (data) => {
     console.log(data)
     try {
-      const response = api.post('token/', data)
-      console.log(response)
+      const response = await api.post('token/', data)
+      localStorage.setItem('access_token', response.data.access)
+      localStorage.setItem('refresh_token', response.data.refresh)
+
+      toast.success('Login Successfully.')
+      setTimeout(()=>{
+        navigate('/main')
+      },1000)
     } catch (error) {
       console.log(error)
     }

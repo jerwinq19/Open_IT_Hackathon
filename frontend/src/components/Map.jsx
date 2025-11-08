@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -7,6 +7,8 @@ import {
   Marker,
 } from "react-simple-maps";
 import { geoCentroid } from "d3-geo";
+
+import api from "../utils/api";
 
 import regionsData from "../assets/Regions.json";
 import provincesData from "../assets/Provinces.json";
@@ -26,8 +28,29 @@ export default function Map() {
   const [selectedMuniCity, setSelectedMuniCity] = useState(null);
   const [selectedBarangay, setSelectedBarangay] = useState(null);
 
+  const [allProjects, setAllProjects] = useState([])
+  const [stopper, setStopper] = useState(1)
+
   const [center, setCenter] = useState([122, 13]);
   const [zoom, setZoom] = useState(1);
+
+    useEffect(
+      () => {
+        const caller = async () => {
+          try {
+            const response = await api.get(`/data/${stopper}/`)
+            console.log(response.data)
+          } catch (error) {
+            
+          }
+        }
+
+        caller()
+      }, []      
+    )
+
+
+
 
   // ✅ Normalize helper
   const normalize = (s) =>
@@ -46,211 +69,10 @@ export default function Map() {
     console.log("nalagay na siguro");
   }, []);
 
-  let allProjects = [
-    {
-      id: 1,
-      date_time_ph: "2025-11-07T14:28:00Z",
-      latitude: 6.34,
-      longtitude: 127.09,
-      magnitude: 3.1,
-      location: "106 km S 42° E of Tarragona (Davao Oriental)",
-      specific_loc: "Tarragona",
-      general_loc: "Davao Oriental",
-    },
-    {
-      id: 2,
-      date_time_ph: "2025-11-07T14:21:00Z",
-      latitude: 16.06,
-      longtitude: 119.95,
-      magnitude: 1.8,
-      location: "011 km N 45° E of Dasol (Pangasinan)",
-      specific_loc: "Dasol",
-      general_loc: "Pangasinan",
-    },
-    {
-      id: 3,
-      date_time_ph: "2025-11-07T14:18:00Z",
-      latitude: 15.97,
-      longtitude: 119.89,
-      magnitude: 2.9,
-      location: "003 km S 11° E of Dasol (Pangasinan)",
-      specific_loc: "Dasol",
-      general_loc: "Pangasinan",
-    },
-    {
-      id: 4,
-      date_time_ph: "2025-11-07T14:14:00Z",
-      latitude: 16.01,
-      longtitude: 119.81,
-      magnitude: 3.1,
-      location: "008 km N 70° W of Dasol (Pangasinan)",
-      specific_loc: "Dasol",
-      general_loc: "Pangasinan",
-    },
-    {
-      id: 5,
-      date_time_ph: "2025-11-07T13:38:00Z",
-      latitude: 16.07,
-      longtitude: 120.03,
-      magnitude: 1.7,
-      location: "009 km S 88° E of Mabini (Pangasinan)",
-      specific_loc: "Mabini",
-      general_loc: "Pangasinan",
-    },
-    {
-      id: 6,
-      date_time_ph: "2025-11-07T13:23:00Z",
-      latitude: 15.98,
-      longtitude: 119.81,
-      magnitude: 4.4,
-      location: "007 km S 84° W of Dasol (Pangasinan)",
-      specific_loc: "Dasol",
-      general_loc: "Pangasinan",
-    },
-    {
-      id: 7,
-      date_time_ph: "2025-11-07T13:21:00Z",
-      latitude: 7.48,
-      longtitude: 126.73,
-      magnitude: 2.3,
-      location: "036 km N 35° E of Manay (Davao Oriental)",
-      specific_loc: "Manay",
-      general_loc: "Davao Oriental",
-    },
-    {
-      id: 8,
-      date_time_ph: "2025-11-07T13:12:00Z",
-      latitude: 11.07,
-      longtitude: 124.1,
-      magnitude: 2.2,
-      location: "014 km N 79° E of City Of Bogo (Cebu)",
-      specific_loc: "City Of Bogo",
-      general_loc: "Cebu",
-    },
-    {
-      id: 9,
-      date_time_ph: "2025-11-07T12:37:00Z",
-      latitude: 12.11,
-      longtitude: 125.09,
-      magnitude: 2.2,
-      location: "009 km N 46° E of San Jose De Buan (Samar)",
-      specific_loc: "San Jose De Buan",
-      general_loc: "Samar",
-    },
-    {
-      id: 10,
-      date_time_ph: "2025-11-07T12:36:00Z",
-      latitude: 6.92,
-      longtitude: 126.4,
-      magnitude: 2.2,
-      location: "016 km S 21° W of Tarragona (Davao Oriental)",
-      specific_loc: "Tarragona",
-      general_loc: "Davao Oriental",
-    },
-    {
-      id: 11,
-      date_time_ph: "2025-11-07T11:51:00Z",
-      latitude: 18.76,
-      longtitude: 121.5,
-      magnitude: 2.7,
-      location: "017 km S 55° E of Fuga Island (Aparri) (Cagayan)",
-      specific_loc: "Fuga Island",
-      general_loc: "Cagayan",
-    },
-    {
-      id: 12,
-      date_time_ph: "2025-11-07T11:34:00Z",
-      latitude: 11.17,
-      longtitude: 123.96,
-      magnitude: 3.0,
-      location: "014 km N 09° W of City Of Bogo (Cebu)",
-      specific_loc: "City Of Bogo",
-      general_loc: "Cebu",
-    },
-    {
-      id: 13,
-      date_time_ph: "2025-11-07T11:23:00Z",
-      latitude: 14.11,
-      longtitude: 120.6,
-      magnitude: 1.6,
-      location: "006 km N 37° W of Nasugbu (Batangas)",
-      specific_loc: "Nasugbu",
-      general_loc: "Batangas",
-    },
-    {
-      id: 14,
-      date_time_ph: "2025-11-07T11:17:00Z",
-      latitude: 11.15,
-      longtitude: 123.96,
-      magnitude: 2.0,
-      location: "011 km N 09° W of City Of Bogo (Cebu)",
-      specific_loc: "City Of Bogo",
-      general_loc: "Cebu",
-    },
-    {
-      id: 15,
-      date_time_ph: "2025-11-07T11:10:00Z",
-      latitude: 7.94,
-      longtitude: 124.6,
-      magnitude: 2.5,
-      location: "020 km N 29° W of Amai Manabilang (Lanao Del Sur)",
-      specific_loc: "Amai Manabilang",
-      general_loc: "Lanao Del Sur",
-    },
-    {
-      id: 16,
-      date_time_ph: "2025-11-07T10:43:00Z",
-      latitude: 11.31,
-      longtitude: 124.48,
-      magnitude: 3.1,
-      location: "006 km S 06° W of Leyte (Leyte)",
-      specific_loc: "Leyte",
-      general_loc: "Leyte",
-    },
-    {
-      id: 17,
-      date_time_ph: "2025-11-07T10:42:00Z",
-      latitude: 9.68,
-      longtitude: 126.25,
-      magnitude: 1.9,
-      location: "015 km S 42° E of General Luna (Surigao Del Norte)",
-      specific_loc: "General Luna",
-      general_loc: "Surigao Del Norte",
-    },
-    {
-      id: 18,
-      date_time_ph: "2025-11-07T10:27:00Z",
-      latitude: 5.99,
-      longtitude: 126.2,
-      magnitude: 3.8,
-      location: "061 km S 68° E of Don Marcelino (Davao Occidental)",
-      specific_loc: "Don Marcelino",
-      general_loc: "Davao Occidental",
-    },
-    {
-      id: 19,
-      date_time_ph: "2025-11-07T10:06:00Z",
-      latitude: 6.83,
-      longtitude: 126.75,
-      magnitude: 2.7,
-      location: "048 km S 29° E of Manay (Davao Oriental)",
-      specific_loc: "Manay",
-      general_loc: "Davao Oriental",
-    },
-    {
-      id: 20,
-      date_time_ph: "2025-11-07T09:53:00Z",
-      latitude: 6.96,
-      longtitude: 126.99,
-      magnitude: 2.8,
-      location: "058 km S 61° E of Manay (Davao Oriental)",
-      specific_loc: "Manay",
-      general_loc: "Davao Oriental",
-    }
-  ];
 
   const handleClick = (geo) => {
     const centroid = geoCentroid(geo);
+    console.log(geo)
 
     if (level === "regions") {
       setSelectedRegion(geo.properties.REGION);
@@ -324,7 +146,6 @@ export default function Map() {
 
     // matches should be stored in an array within a state
     if (municities) {
-      console.log(municities);
       match = municities.features.find(
         (b) => normalize(b.properties.NAME_2) === normalize(case_1)
       );
@@ -363,7 +184,8 @@ export default function Map() {
   // }
 
   return (
-    <div>
+    <div className="w-screen h-screen overflow-y-scroll">
+      <div className="w-3/4 h-3/4"></div>
       <div style={{ position: "relative" }}>
         <h2>{"Level:" + " " + level.toUpperCase()}</h2>
         <h4>Region: {selectedRegion ? selectedRegion : "Select a Region."}</h4>
@@ -386,11 +208,11 @@ export default function Map() {
       <ComposableMap
         projection="geoMercator"
         projectionConfig={{
-          scale: level === "barangays" ? 8000 : 2000,
+          scale: level === "barangays" ? 8000 : 300,
           center: [122, 13],
         }}
-        width={800}
-        height={600}
+        width={300}
+        height={100}
       >
         <ZoomableGroup
           center={center}
@@ -435,7 +257,7 @@ export default function Map() {
             return (
               <Marker key={eqe.id} coordinates={coords}>
                 <circle
-                  r={4 / zoom}
+                  r={1 / zoom}
                   fill="red"
                   stroke="white"
                   strokeWidth={0.75 / zoom}

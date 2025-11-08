@@ -1,6 +1,10 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import regionsData from "../assets/Regions.json";
+import provincesData from "../assets/Provinces.json";
+import municitiesData from "../assets/MuniCities.json";
+import barangaysData from "../assets/Barangays.json";
 
 const RegisterForm = () => {
   const {
@@ -10,9 +14,44 @@ const RegisterForm = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const formSubmit = (data) => {
-    console.log(data);
+  const [regionSelected, setRegionSelected] = useState("");
+  const [provinceSelected, setProvinceSelected] = useState("");
+  const [citySelected, setCitySelected] = useState("");
+  const [barangaySelected, setBarangaySelected] = useState("");
+
+  let regionOption = [];
+  const [provinceOption, setProvinceOption] = useState([]);
+
+  const locationFiller = () => {
+    console.log(provincesData);
+    console.log(regionOption)
+    regionsData.features.map((region) => {
+      regionOption.push(region.properties.REGION);
+
+    });
+
+    regionSelected &&
+      provincesData.features.map((province) => {
+        if (province.properties.REGION === regionSelected) {
+          console.log(province);
+        }
+      });
   };
+
+  useEffect(() => {
+    locationFiller();
+  }, []);
+
+  const formSubmit = (data) => {
+    // for (regions in barangaysData.features) {
+    //   const data = `${regions.properties.NAME_0}, ${regions.properties.NAME_1}, ${regions.properties.NAME_2},  ${regions.properties.NAME_3}`
+    // }
+    // console.log(barangaysData)
+  };
+  // features.properties.REGION
+  // features.properties.PROVINCE
+  // features.properties.NAME_2
+  // features.properties.NAME_3
 
   return (
     <form
@@ -59,7 +98,6 @@ const RegisterForm = () => {
             className={`w-full bg-gray-100 px-5 py-3 rounded-lg border shadow-md focus:outline-none focus:scale-110 transition-all ${
               errors.region ? "border-red-400 text-red-300" : "border-gray-300"
             }`}
-            id="selectmethod"
             defaultValue=""
             name="region"
             {...register("region", { required: "Region is required." })}
@@ -67,8 +105,9 @@ const RegisterForm = () => {
             <option value="" disabled>
               {errors.region ? errors.region?.message : "Select your Region"}
             </option>
-            <option value="1">Blue</option>
-            <option value="2">Red</option>
+            {regionOption.map((region) => {
+              <option value={region}>{region}</option>;
+            })}
           </select>
         </div>
 
@@ -80,7 +119,6 @@ const RegisterForm = () => {
                 ? "border-red-400 text-red-300"
                 : "border-gray-300"
             }`}
-            id="selectmethod"
             defaultValue=""
             name="province"
             {...register("province", { required: "Province is required." })}
@@ -96,14 +134,15 @@ const RegisterForm = () => {
         </div>
       </div>
 
-       <div className="w-full flex flex-row gap-4">
+      <div className="w-full flex flex-row gap-4">
         <div className="w-full">
           <h1>Municipality</h1>
           <select
             className={`w-full bg-gray-100 px-5 py-3 rounded-lg border shadow-md focus:outline-none focus:scale-110 transition-all ${
-              errors.city ? "border-red-400 text-red-300 text-sm" : "border-gray-300"
+              errors.city
+                ? "border-red-400 text-red-300 text-sm"
+                : "border-gray-300"
             }`}
-            id="selectmethod"
             defaultValue=""
             name="city"
             {...register("city", { required: "Municipality is required." })}
@@ -124,7 +163,6 @@ const RegisterForm = () => {
                 ? "border-red-400 text-red-300"
                 : "border-gray-300"
             }`}
-            id="selectmethod"
             defaultValue=""
             name="barangay"
             {...register("barangay", { required: "Barangay is required." })}
