@@ -12,7 +12,13 @@ const LoginForm = () => {
   } = useForm();
 
   const formSubmit = (data) => {
-    
+    console.log(data)
+    try {
+      const response = api.post('token/', data)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (

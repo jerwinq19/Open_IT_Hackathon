@@ -25,12 +25,14 @@ api.interceptors.response.use(
         const newAccessToken = response.data.access;
         localStorage.setItem("access_token", newAccessToken);
         original.headers.Authorization = `Bearer ${newAccessToken}`;
+        console.log('2 Dito naman')
       } catch (error) {
+        console.log('3 tite')
         localStorage.clear();
         window.location.href = '/login'
       }
     }
-
+    console.log('1 Dito ang error')
     return Promise.reject(error);
   }
 );
