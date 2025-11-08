@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
+from django.db.models import Avg
 
 class LogoutView(views.APIView):
     def post(self, request):
@@ -25,7 +26,18 @@ class RegisterUser(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     permission_classes = [AllowAny]
 
-class GetLocAndGenLoc(generics.ListAPIView):
+class GetEQdata(generics.ListAPIView):
     serializer_class = EarthquakeSerializer
     queryset = EarthquakeInfo.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+
+class DashboardData(views.APIView):
+    # permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        total_ea_caces = EarthquakeInfo.objects.all().count()
+        average_magnitude = EarthquakeInfo.objects.aggregate(average=(Avg('magnitude')))
+        
+        return Response({
+            "average_magnitude": average_magnitude
+        })

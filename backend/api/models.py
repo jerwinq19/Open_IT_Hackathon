@@ -22,3 +22,19 @@ class EarthquakeInfo(models.Model):
     
     def __str__(self):
         return f"{self.location}"
+
+class Report(models.Model):
+    
+    STAT_CHOICES = (
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    )
+    
+    who = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    when = models.DateTimeField(auto_now_add=True)
+    where = models.CharField(max_length=400)
+    description = models.TextField()
+    report_status = models.CharField(max_length=20, default="Rejected", choices=STAT_CHOICES)
+    
+    def __str__(self):
+        return f"{self.who.username} - {self.report_status}"
