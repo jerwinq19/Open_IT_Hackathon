@@ -31,6 +31,11 @@ class GetEQdata(generics.ListAPIView):
     queryset = EarthquakeInfo.objects.all()
     # permission_classes = [IsAuthenticated]
 
+class GetOneEQdata(generics.RetrieveAPIView):
+    serializer_class = EarthquakeSerializer
+    queryset = EarthquakeInfo.objects.all()
+    
+
 class DashboardData(views.APIView):
     # permission_classes = [IsAuthenticated]
     

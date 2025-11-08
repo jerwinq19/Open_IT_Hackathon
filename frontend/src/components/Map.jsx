@@ -28,29 +28,30 @@ export default function Map() {
   const [selectedMuniCity, setSelectedMuniCity] = useState(null);
   const [selectedBarangay, setSelectedBarangay] = useState(null);
 
-  const [allProjects, setAllProjects] = useState([])
-  const [stopper, setStopper] = useState(1)
+  const [allProjects, setAllProjects] = useState([]);
+  const [stopper, setStopper] = useState(1);
 
   const [center, setCenter] = useState([122, 13]);
   const [zoom, setZoom] = useState(1);
 
-    useEffect(
-      () => {
-        const caller = async () => {
-          try {
-            const response = await api.get(`/data/${stopper}/`)
-            console.log(response.data)
-          } catch (error) {
-            
-          }
-        }
+  const caller = async () => {
+    try {
+      const response = await api.get(`/data/${stopper}/`);
+      console.log(response.data);
+      console.log(stopper);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-        caller()
-      }, []      
-    )
+  useEffect(() => {
+    caller()
+  }, []);
 
-
-
+  setInterval(() => {
+    setStopper((prev) => prev + 1);
+    //  caller()
+  }, 5000);
 
   // ✅ Normalize helper
   const normalize = (s) =>
@@ -69,10 +70,9 @@ export default function Map() {
     console.log("nalagay na siguro");
   }, []);
 
-
   const handleClick = (geo) => {
     const centroid = geoCentroid(geo);
-    console.log(geo)
+    console.log(geo);
 
     if (level === "regions") {
       setSelectedRegion(geo.properties.REGION);
